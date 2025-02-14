@@ -27,7 +27,7 @@ VLANs will be used to isolate network traffic by team, while ACLs will restrict 
 
 # 🖥️ Network Topology
 
-![Enterprise Project ACLs](https://github.com/user-attachments/assets/bdb1c7c6-5df0-4962-860b-ef3574dfe5de)
+![Enterprise Project ACLs](https://github.com/user-attachments/assets/ad5a9fac-c925-4766-a64d-b24934f160e5)
 
 # 🛠️ Network Components
 
