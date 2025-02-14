@@ -1,0 +1,947 @@
+Building 1 Ground Floor:
+PC1
+Ipv4 Address: 192.168.5.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.5.100
+DNS Server: 0.0.0.0
+
+PC2
+Ipv4 Address: 192.168.6.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.6.100
+DNS Server: 0.0.0.0
+
+SWITCH-1
+Switch>en
+Switch#config t
+Enter configuration commands, one per line. End with CNTL/Z
+Switch(config)#vlan 10
+Switch(config-vlan)#name Receptionist
+Switch(config-vlan)#vlan 20
+Switch(config-vlan)#name Admin
+Switch(config-vlan)#int fa0/1
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 10
+Switch(config-if)#exit
+Switch(config)#int fa0/2
+Switch(config-if)#switchport access vlan 20
+Switch(config-if)#exit
+Switch(config)#int fa0/3
+Switch(config-if)#switchport mode trunk
+
+ROUTER
+Interfacing Ports and Assigning IP Address
+Router>en
+Router#config t
+Router(config)#int se0/1/0
+Router(config)#ip add 14.0.0.2 255.0.0.0
+Router(config)#no shut
+
+Configuring Inter-vlan Routing
+Router(config-subif)#int gig0/0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip add 192.168.5.100 255.255.255.0
+Router(config-subif)#exit
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.20, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.20, changed state to up
+Router(config-subif)#int gig0/0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip add 192.168.6.100 255.255.255.0
+Router(config-subif)#exit
+Router(config)#^Z
+
+Configuring Routing
+Router#
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#router eigrp 1
+Router(config-router)#network 192.168.5.0 0.0.0.255
+Router(config-router)#network 192.168.6.0 0.0.0.255
+Router(config-router)#network 14.0.0.0 0.0.0.255
+Router(config-router)#^Z
+
+Configuring ACL
+Router>en
+Router#config
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 19.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 20.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 21.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 22.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 19.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 20.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 21.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 22.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 permit ip any any
+Router(config)#int se0/1/0
+Router(config-if)#ip access-group 150 in
+Router(config-if)#^Z
+
+
+Building 1 First Floor
+PC1
+Ipv4 Address: 192.168.3.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.3.100
+DNS Server: 0.0.0.0
+
+LAPTOP-PT 1
+Ipv4 Address: 192.168.4.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.4.100
+DNS Server: 0.0.0.0
+
+LAPTOP-PT 2
+Ipv4 Address: 192.168.4.2
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.4.100
+DNS Server: 0.0.0.0
+
+ACCESS POINT
+Port 1
+SSID: Karthik1
+Authentication: WPA2-PSK
+PSK Pass Phrase: 12345678
+Encryption Type: AES
+
+SWITCH-1
+Switch#en
+Switch#config t
+Switch(config)#vlan 10
+Switch(config-vlan) #name Team-Leader
+Switch(config-vlan) #vlan 20
+Switch(config-vlan) #name Team-Member
+Switch(config-vlan) #int fa0/2
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 10
+Switch(config-if) #int fa0/3
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 20
+Switch(config-if) #int fa0/1
+Switch(config-if) #switchport mode trunk
+Switch(config-if) #^Z
+
+ROUTER
+Interfacing Ports and Assigning IP Address
+Router>en
+Router#config t
+Router(config)#int se0/1/0
+Router(config)#ip add 13.0.0.2 255.0.0.0
+Router(config)#no shut
+Router(config)#int se0/1/1
+Router(config)#ip add 14.0.0.1 255.0.0.0
+Router(config)#no shut
+
+Configuring Inter-vlan Routing
+Router>
+Router>en
+Router#config t
+Router(config-subif)#int gig0/0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip add 192.168.3.100 255.255.255.0
+Router(config-subif)#exit
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.20, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.20, changed state to up
+Router(config-subif)#int gig0/0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip add 192.168.4.100 255.255.255.0
+Router(config-subif)#exit
+
+Configuring Routing
+Router#
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#router eigrp 1
+Router(config-router)#network 192.168.3.0 0.0.0.255
+Router(config-router)#network 192.168.4.0 0.0.0.255
+Router(config-router)#network 13.0.0.0 0.0.0.255
+Router(config-router)#network 14.0.0.0 0.0.0.255
+Router(config-router)#^Z
+
+Configuring ACL
+Router>en
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.5.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.3.0 0.0.0.255
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 14.0.0.2 (Serial0/1/1) is down: holding time expired
+Router(config)#
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 13.0.0.1 (Serial0/1/0) is down: holding time expired
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.3.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 19.0.0.0 0.255.255.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 21.0.0.0 0.255.255.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 22.0.0.0 0.255.255.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.5.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.4.0 0.0.0.255
+Router(config)#access-list 150 permit ip any any
+Router(config)#int
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 13.0.0.1 (Serial0/1/0) is up: new adjacency
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 14.0.0.2 (Serial0/1/1) is up: new adjacency
+% Incomplete command.
+Router(config)#int se0/1/0
+Router(config-if)#ip access-group 150 in
+Router(config-if)#int se0/1/1
+Router(config-if)#ip access-group 150 in
+Router(config-if)#^Z
+
+Building 1 Ground Floor:
+PC1
+Ipv4 Address: 192.168.5.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.5.100
+DNS Server: 0.0.0.0
+
+PC2
+Ipv4 Address: 192.168.6.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.6.100
+DNS Server: 0.0.0.0
+
+SWITCH-1
+Switch>en
+Switch#config t
+Enter configuration commands, one per line. End with CNTL/Z
+Switch(config)#vlan 10
+Switch(config-vlan)#name Receptionist
+Switch(config-vlan)#vlan 20
+Switch(config-vlan)#name Admin
+Switch(config-vlan)#int fa0/1
+Switch(config-if)#switchport mode access
+Switch(config-if)#switchport access vlan 10
+Switch(config-if)#exit
+Switch(config)#int fa0/2
+Switch(config-if)#switchport access vlan 20
+Switch(config-if)#exit
+Switch(config)#int fa0/3
+Switch(config-if)#switchport mode trunk
+
+ROUTER
+Interfacing Ports and Assigning IP Address
+Router>en
+Router#config t
+Router(config)#int se0/1/0
+Router(config)#ip add 14.0.0.2 255.0.0.0
+Router(config)#no shut
+
+Configuring Inter-vlan Routing
+Router(config-subif)#int gig0/0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip add 192.168.5.100 255.255.255.0
+Router(config-subif)#exit
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.20, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.20, changed state to up
+Router(config-subif)#int gig0/0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip add 192.168.6.100 255.255.255.0
+Router(config-subif)#exit
+Router(config)#^Z
+
+Configuring Routing
+Router#
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#router eigrp 1
+Router(config-router)#network 192.168.5.0 0.0.0.255
+Router(config-router)#network 192.168.6.0 0.0.0.255
+Router(config-router)#network 14.0.0.0 0.0.0.255
+Router(config-router)#^Z
+
+Configuring ACL
+Router>en
+Router#config
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 19.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 20.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 21.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 22.0.0.0 0.255.255.255 192.168.5.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 19.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 20.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 21.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 22.0.0.0 0.255.255.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.6.0 0.0.0.255
+Router(config)#access-list 150 permit ip any any
+Router(config)#int se0/1/0
+Router(config-if)#ip access-group 150 in
+Router(config-if)#^Z
+
+Building 1 Second Floor
+PC1
+Ipv4 Address: 192.168.1.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.1.100
+DNS Server: 0.0.0.0
+
+LAPTOP-PT 1
+Ipv4 Address: 192.168.2.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.2.100
+DNS Server: 0.0.0.0
+
+LAPTOP-PT 2
+Ipv4 Address: 192.168.2.2
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.2.100
+DNS Server: 0.0.0.0
+
+SWITCH-1
+Switch#en
+Switch#config t
+Switch(config)#vlan 10
+Switch(config-vlan) #name Team-Leader
+Switch(config-vlan) #vlan 20
+Switch(config-vlan) #name Team-Member
+Switch(config-vlan) #int fa0/2
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 10
+Switch(config-if) #int fa0/3
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 20
+Switch(config-if) #int fa0/1
+Switch(config-if) #switchport mode trunk
+Switch(config-if) #^Z
+
+ACCESS POINT Port 1
+SSID: Karthik
+Authentication: WPA2-PSK
+PSK Pass Phrase: 12345678
+Encryption Type: AES
+
+ROUTER
+Interfacing Ports and Assigning IP Address
+Router>en
+Router#config t
+Router(config)#int se0/1/0
+Router(config)#ip add 10.0.0.1 255.0.0.0
+Router(config)#no shut
+Router(config)#int se0/1/1
+Router(config)#ip add 13.0.0.1 255.0.0.0
+Router(config)#no shut
+
+Configuring Inter-vlan Routing
+Router>
+Router>en
+Router#config t
+Router(config-subif)#int gig0/0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip add 192.168.1.100 255.255.255.0
+Router(config-subif)#exit
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.20, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.20, changed state to up
+Router(config-subif)#int gig0/0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip add 192.168.2.100 255.255.255.0
+Router(config-subif)#exit
+Router(config)#^Z
+
+Configuring Routing
+Router#
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z
+Router(config)#router eigrp 1
+Router(config-router)#network 192.168.1.0 0.0.0.255
+Router(config-router)#network 192.168.2.0 0.0.0.255
+Router(config-router)#network 10.0.0.0 0.0.0.255
+Router(config-router)#network 13.0.0.0 0.0.0.255
+Router(config-router)#^Z
+
+Configuring ACL
+Router>
+Router>en
+Router#config t
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.1.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.1.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.1.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.1.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.1.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.1.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.1.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.1.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.1.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 20.0.0.0 0.255.255.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 21.0.0.0 0.255.255.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 22.0.0.0 0.255.255.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.5.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.2.0 0.0.0.255
+Router(config)#access-list 150 permit ip any any
+Router(config)#
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 13.0.0.2 (Serial0/1/1) is up: new adjacency
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 10.0.0.2 (Serial0/1/0) is up: new adjacency
+Router(config)#int se0/1/0
+Router(config-if)#ip access-group 150 in
+Router(config-if)#int se0/1/1
+Router(config-if)#ip access-group 150 in
+Router(config-if)#^Z
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 13.0.0.2 (Serial0/1/1) is down: Interface Goodbye received
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 13.0.0.2 (Serial0/1/1) is up: new adjacency
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 13.0.0.2 (Serial0/1/1) is down: retry limit exceeded
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 13.0.0.2 (Serial0/1/1) is up: new adjacency
+
+Building 2 Ground Floor:
+PC1 Configuration
+IPv4 Address: 192.168.11.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.11.100
+DNS Server: 0.0.0.0
+
+PC2
+Ipv4 Address: 192.168.12.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.12.100
+DNS Server: 0.0.0.0
+
+SWITCH-1
+Switch>en
+Switch#config t
+Enter configuration commands, one per line. End with CNTL/Z
+Switch(config)#vlan 10
+Switch(config-vlan)#name Finance
+Switch(config-vlan)#vlan 20
+Switch(config-vlan)#name Sales
+Switch(config-vlan)#int fa0/1
+Switch(config-if)#switchport access vlan 10
+Switch(config-if)#exit
+Switch(config)#int fa0/2
+Switch(config-if)#switchport access vlan 20
+Switch(config-if)#exit
+Switch(config)#int fa0/3
+Switch(config-if)#switchport mode trunk
+Switch(config-if)#
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/3, changed state to down
+%LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/3, changed state to up
+
+ROUTER
+Router>en
+Router#config t
+Router(config)#int se0/1/0
+Router(config)#ip add 16.0.0.2 255.0.0.0
+Router(config)#no shut
+
+Configuring Inter-vlan Routing
+Router(config-subif)#int gig0/0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip add 192.168.11.100 255.255.255.0
+Router(config-subif)#exit
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.20, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.20, changed state to up
+Router(config-subif)#int gig0/0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip add 192.168.12.100 255.255.255.0
+Router(config-subif)#exit
+Router(config)#^Z
+
+Configuring Routing Process
+Router#
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z
+Router(config)#router eigrp 1
+Router(config-router)#network 192.168.12.0 0.0.0.255
+Router(config-router)#network 16.0.0.0 0.0.0.255
+Router(config-router)#^Z
+
+Configuring ACL Router>en
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.5.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 19.0.0.0 0.255.255.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 20.0.0.0 0.255.255.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 21.0.0.0 0.255.255.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 22.0.0.0 0.255.255.255 192.168.11.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 19.0.0.0 0.255.255.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 20.0.0.0 0.255.255.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 21.0.0.0 0.255.255.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 22.0.0.0 0.255.255.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.5.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.12.0 0.0.0.255
+Router(config)#access-list 150 permit ip any any
+Router(config)#int
+% Incomplete command.
+Router(config)#int se0/1/0
+Router(config-if)#ip access-group 150 in
+Router(config-if)#^Z
+
+Building 2 First Floor:
+PC1
+Ipv4 Address: 192.168.9.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.9.100
+DNS Server: 0.0.0.0
+
+LAPTOP-PT 1
+Ipv4 Address: 192.168.10.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.10.100
+DNS Server: 0.0.0.0
+
+LAPTOP-PT 2
+Ipv4 Address: 192.168.10.2
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.10.100
+DNS Server: 0.0.0.0
+
+ACCESS POINT
+Port 1
+SSID: Karthik3
+Authentication: WPA2-PSK
+PSK Pass Phrase: 12345678
+Encryption Type: AES
+
+SWITCH-1
+Switch#en
+Switch#config t
+Switch(config)#vlan 10
+Switch(config-vlan) #name Team-Leader
+Switch(config-vlan) #vlan 20
+Switch(config-vlan) #name Team-Member
+Switch(config-vlan) #int fa0/2
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 10
+Switch(config-if) #int fa0/3
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 20
+Switch(config-if) #int fa0/1
+Switch(config-if) #switchport mode trunk
+Switch(config-if) #^Z
+
+ROUTER
+Router>en
+Router#config t
+Router(config)#int se0/1/0
+Router(config)#ip add 15.0.0.2 255.0.0.0.
+Router(config)#no shut
+Router(config)#int se0/1/1
+Router(config)#ip add 16.0.0.1 255.0.0.0
+Router(config)#no shut
+
+Configuring Inter-vlan Routing
+Router>
+Router>en
+Router#config t
+Router(config-subif)#int gig0/0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip add 192.168.9.100 255.255.255.0
+Router(config-subif)#exit
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.20, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.20, changed state to up
+Router(config-subif)#int gig0/0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip add 192.168.10.100 255.255.255.0
+Router(config-subif)#exit
+
+Configuring Routing Router#
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#router eigrp 1
+Router(config-router)#network 192.168.9.0 0.0.0.255
+Router(config-router)#network 192.168.10.0 0.0.0.255
+Router(config-router)#network 15.0.0.0 0.0.0.255
+Router(config-router)#network 16.0.0.0 0.0.0.255
+Router(config-router)#^Z
+
+Configuring ACL Router>en
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.9.0 0.0.0.255
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 16.0.0.2 (Serial0/1/1) is down: holding time expired
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 15.0.0.1 (Serial0/1/0) is down: holding time expired
+Router(config)#access-list 150 deny icmp 192.168.5.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.9.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 19.0.0.0 0.255.255.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 20.0.0.0 0.255.255.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 21.0.0.0 0.255.255.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.5.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.7.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.8.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.10.0 0.0.0.255
+Router(config)#access-list 150 permit ip any any
+Router(config)#
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 15.0.0.1 (Serial0/1/0) is up: new adjacency
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 16.0.0.2 (Serial0/1/1) is up: new adjacency
+Router(config)#int se0/1/0
+Router(config-if)#ip access-group 150 in
+Router(config-if)#int se0/1/1
+Router(config-if)#ip access-group 150 in
+Router(config-if)#^Z
+
+Building 2 Second Floor:
+PC1
+Ipv4 Address: 192.168.7.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.7.100
+DNS Server: 0.0.0.0
+
+LAPTOP-PT 1
+Ipv4 Address: 192.168.8.1
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.8.100
+DNS Server: 0.0.0.0
+
+LAPTOP-PT 2
+Ipv4 Address: 192.168.8.2
+Subnet Mask: 255.255.255.0
+Default Gateway: 192.168.8.100
+DNS Server: 0.0.0.0
+
+ACCESS POINT
+Port 1
+SSID: Karthik2
+Authentication: WPA2-PSK
+PSK Pass Phrase: 12345678
+Encryption Type: AES
+
+SWITCH-1
+Switch#en
+Switch#config t
+Switch(config)#vlan 10
+Switch(config-vlan) #name Team-Leader
+Switch(config-vlan) #vlan 20
+Switch(config-vlan) #name Team-Member
+Switch(config-vlan) #int fa0/2
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 10
+Switch(config-if) #int fa0/3
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 20
+Switch(config-if) #int fa0/1
+Switch(config-if) #switchport mode trunk
+Switch(config-if) #^Z
+
+ROUTER
+Interfacing Ports and Assigning IP Address
+Router>en
+Router#config t
+Router(config)#int se0/1/0
+Router(config)#ip add 15.0.0.1 255.0.0.0.
+Router(config)#no shut
+Router(config)#int se0/1/1
+Router(config)#ip add 12.0.0.2 255.0.0.0.
+Router(config)#no shut
+
+Configuring Inter-vlan Routing
+Router>
+Router>en
+Router#config t
+Router(config-subif)#int gig0/0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip add 192.168.7.100 255.255.255.0
+Router(config-subif)#exit
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.20, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.20, changed state to up
+Router(config-subif)#int gig0/0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip add 192.168.8.100 255.255.255.0
+Router(config-subif)#exit
+
+Configuring Routing
+Router#
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#router eigrp 1
+Router(config-router)#network 192.168.7.0 0.0.0.255
+Router(config-router)#network 192.168.8.0 0.0.0.255
+Router(config-router)#network 15.0.0.0 0.0.0.255
+Router(config-router)#network 12.0.0.0 0.0.0.255
+Router(config-router)#^Z
+
+Configuring ACL
+Router>en
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168..0 0.0.0.255 192.168.7.0 0.0.0.255
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 15.0.0.2 (Serial0/1/0) is down: holding time expired
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 12.0.0.1 (Serial0/1/1) is down: holding time expired
+Router(config)#access-list 150 deny icmp 192.168.5.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.7.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 17.0.0.0 0.255.255.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 18.0.0.0 0.255.255.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 19.0.0.0 0.255.255.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 20.0.0.0 0.255.255.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 22.0.0.0 0.255.255.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.1.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.2.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.3.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.4.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.5.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.6.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.9.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.10.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.11.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 deny icmp 192.168.12.0 0.0.0.255 192.168.8.0 0.0.0.255
+Router(config)#access-list 150 permit ip any any
+Router(config)#
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 12.0.0.1 (Serial0/1/1) is up: new adjacency
+%DUAL-5-NBRCHANGE: IP-EIGRP 1: Neighbor 15.0.0.2 (Serial0/1/0) is up: new adjacency
+Router(config)#int se0/1/1
+Router(config-if)#ip access-group 150 in
+Router(config-if)#int se0/1/0
+Router(config-if)#ip access-group 150 in
+Router(config-if)#^Z
+
+Data Center 1
+Server 1
+Ipv4 Address: 17.0.0.1
+Subnet Mask: 255.0.0.0
+Default Gateway: 17.0.0.100
+DNS Server: 0.0.0.0
+
+Server 2
+Ipv4 Address: 18.0.0.1
+Subnet Mask: 255.0.0.0
+Default Gateway: 18.0.0.100
+DNS Server: 0.0.0.0
+
+Switch Switch#en
+Switch#config t
+Switch(config)#vlan 10
+Switch(config-vlan) #name Admin
+Switch(config-vlan) #vlan 20
+Switch(config-vlan) #name Finance
+Switch(config-vlan) #int fa0/2
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 10
+Switch(config-if) #int fa0/3
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 20
+Switch(config-if) #int fa0/1
+Switch(config-if) #switchport mode trunk
+Switch(config-if) #^Z
+
+Router
+Router>en
+Router#config t
+Router(config)#int se0/1/0
+Router(config)#ip add 10.0.0.2 255.0.0.0
+Router(config)#no shut
+Router(config)#int se0/1/1
+Router(config)#ip add 11.0.0.1 255.0.0.0
+Router(config)#no shut
+
+Configuring Inter-vlan Routing
+Router(config-subif)#int gig0/0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip add 192.168.11.100 255.255.255.0
+Router(config-subif)#exit
+%LINK-5-CHANGED: Interface GigabitEthernet0/0/0.20, changed state to up
+%LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0/0.20, changed state to up
+Router(config-subif)#int gig0/0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip add 192.168.12.100 255.255.255.0
+Router(config-subif)#exit
+Router(config)#^Z
+
+Configuring Routing Process
+Router#
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#router eigrp 1
+Router(config-router)#network 10.0.0.0 0.0.0.255
+Router(config-router)#network 11.0.0.0 0.0.0.255
+Router(config-router)#^Z
+
+Data Center 2
+Server 1
+Ipv4 Address: 19.0.0.1
+Subnet Mask: 255.0.0.0
+Default Gateway: 19.0.0.100
+DNS Server: 0.0.0.0
+
+Server 2
+Ipv4 Address: 20.0.0.1
+Subnet Mask: 255.0.0.0
+Default Gateway: 20.0.0.100
+DNS Server: 0.0.0.0
+
+Server 3
+Ipv4 Address: 21.0.0.1
+Subnet Mask: 255.0.0.0
+Default Gateway: 21.0.0.100
+DNS Server: 0.0.0.0
+
+Server 4
+Ipv4 Address: 22.0.0.1
+Subnet Mask: 255.0.0.0
+Default Gateway: 22.0.0.100
+DNS Server: 0.0.0.0
+
+Switch**** Switch#en
+Switch#config t
+Switch(config)#vlan 10
+Switch(config-vlan) #name Project team-1
+Switch(config-vlan) #vlan 20
+Switch(config-vlan) #name Project team-2
+Switch(config-vlan) #vlan 30
+Switch(config-vlan) #name Project team-3
+Switch(config-vlan) #vlan 40
+Switch(config-vlan) #name Project team-4
+Switch(config-vlan) #int fa0/1
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 10
+Switch(config-if) #int fa0/2
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 20
+Switch(config-if) #int fa0/3
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 30
+Switch(config-if) #int fa0/4
+Switch(config-if) #switch mode access
+Switch(config-if) #switch access vlan 40
+Switch(config-if) #int fa0/5
+Switch(config-if) #switchport mode trunk
+Switch(config-if) #^Z
+
+Router Router>en
+Router#config t
+Router(config)#int se0/1/0
+Router(config)#ip add 11.0.0.2 255.0.0.0.
+Router(config)#no shut
+Router(config)#int se0/2/0
+Router(config)#ip add 12.0.0.1 255.0.0.0.
+Router(config)#no shut
+
+Configuring Inter-vlan Routing Router(config-subif)#int gig0/0/0.10
+Router(config-subif)#encapsulation dot1q 10
+Router(config-subif)#ip add 19.0.0.100 255.0.0.0
+Router(config-subif)#exit
+Router(config-subif)#int gig0/0/0.20
+Router(config-subif)#encapsulation dot1q 20
+Router(config-subif)#ip add 20.0.0.100 255.0.0.0
+Router(config-subif)#exit
+Router(config-subif)#int gig0/0/0.30
+Router(config-subif)#encapsulation dot1q 30
+Router(config-subif)#ip add 21.0.0.100 255.0.0.0
+Router(config-subif)#exit
+Router(config-subif)#int gig0/0/0.40
+Router(config-subif)#encapsulation dot1q 40
+Router(config-subif)#ip add 22.0.0.100 255.0.0.0
+Router(config-subif)#exit
+
+Configuring Routing Process
+Router#
+Router#config t
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)#router eigrp 1
+Router(config-router)#network 11.0.0.0 0.0.0.255
+Router(config-router)#network 12.0.0.0 0.0.0.255
+Router(config-router)#^
